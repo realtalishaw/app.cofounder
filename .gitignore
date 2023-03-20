@@ -1,0 +1,17 @@
+# Node.js related
+node_modules/
+npm-debug.log*
+
+# Build related
+build/
+dist/
+*.class
+
+# IDEs and editors
+*.swp
+*.swo
+*.bak
+*.tmp
+*.d
+.idea/
+*.vscode/
