@@ -7,7 +7,7 @@ import PersonalityTraits, { questions as PersonalityTraitsQuestions } from './Pe
 import ValuesAndVision, { questions as ValuesAndVisionQuestions } from './ValuesAndVision';
 import LocationAndAvailability, { questions as LocationAndAvailabilityQuestions } from './LocationAndAvailability';
 import FinancialAndLegalMatters, { questions as FinancialAndLegalMattersQuestions } from './FinancialAndLegalMatters';
-//import ConflictResolution, { questions as CommunicationAndConflictResolutionQuestions } from './CommunicationAndConflictResolution';
+import ConflictResolution, { questions as CommunicationAndConflictResolutionQuestions } from './CommunicationAndConflictResolution';
 import InterpersonalDynamics, { questions as InterpersonalDynamicsQuestions } from './InterpersonalDynamics';
 import CoFounderPreferences, { questions as CoFounderPreferencesQuestions } from './CoFounderPreferences';
 
@@ -36,7 +36,7 @@ export const sections = [
   { title: 'Values & Vision', component: ValuesAndVision, questions: ValuesAndVisionQuestions, icon: HeartIcon },
   { title: 'Location & Availability', component: LocationAndAvailability, questions: LocationAndAvailabilityQuestions, icon: MapPinIcon },
   { title: 'Financial & Legal Matters', component: FinancialAndLegalMatters, questions: FinancialAndLegalMattersQuestions, icon: BanknotesIcon },
-  //{ title: 'Communication & Conflict Resolution', component: ConflictResolution, questions: CommunicationAndConflictResolutionQuestions, icon: ChatBubbleLeftRightIcon },
+  { title: 'Communication & Conflict Resolution', component: ConflictResolution, questions: CommunicationAndConflictResolutionQuestions, icon: ChatBubbleLeftRightIcon },
   { title: 'Interpersonal Dynamics', component: InterpersonalDynamics, questions: InterpersonalDynamicsQuestions, icon: FaceSmileIcon },
   { title: 'Co-founder Preferences', component: CoFounderPreferences, questions: CoFounderPreferencesQuestions, icon: RocketLaunchIcon },
 ];

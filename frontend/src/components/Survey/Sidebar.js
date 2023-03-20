@@ -13,7 +13,7 @@ import {
 
 
 
-export default function Sidebar( { activeSection, setActiveSection }) {
+export default function Sidebar({ activeSection, setActiveSection, setCurrentSection }) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
  
 
