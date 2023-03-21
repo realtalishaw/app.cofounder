@@ -1,5 +1,4 @@
-// src/Questions/QuestionRenderer.js
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react'; // Fixed typo: useEffect
 import TextInput from './TextInput';
 import TextArea from './TextArea';
 import MultipleChoice from './MultipleChoice';
@@ -8,42 +7,64 @@ import YesNo from './YesNo';
 import MultipleSelection from './MultipleSelection';
 import Ranking from './Ranking';
 
-const QuestionRenderer = ({ question }) => {
-  // Set the answer state based on local storage or initialize it to null
-  const [currentAnswer, setCurrentAnswer] = useState(
-    () => localStorage.getItem(`survey-answer-${question.id}`) || null
-  );
-
-  // Save the answer to local storage when the answer changes
-  useEffect(() => {
-    if (currentAnswer !== null) {
-      localStorage.setItem(`survey-answer-${question.id}`, currentAnswer);
+const QuestionRenderer = ({ question, savedAnswers = {}, onSaveAnswer }) => { // Remove the duplicate line
+  const savedAnswer = savedAnswers[question.id];
+  const [currentAnswer, setCurrentAnswer] = useState(() => {
+    if (savedAnswer?.answer) {
+      return savedAnswer.answer;
     }
-  }, [currentAnswer, question.id]);
+    return null;
+  });
+
+  useEffect(() => {
+    if (onSaveAnswer && currentAnswer !== null) {
+      onSaveAnswer({
+        questionId: question.id,
+        answer: currentAnswer,
+      });
+    }
+  }, [currentAnswer, onSaveAnswer, question.id]);
+
+  const handleAnswerChange = (newAnswer) => {
+    setCurrentAnswer(newAnswer);
+    onSaveAnswer({ questionId: question.id, answer: newAnswer });
+  };
+  
+  const handleSubAnswerChange = (index, newAnswer) => {
+    const updatedAnswers = currentAnswer
+      ? [...currentAnswer]
+      : question.subInputs.map((subInput) => ({ ...subInput, value: '' }));
+    updatedAnswers[index].value = newAnswer;
+    setCurrentAnswer(updatedAnswers);
+    onSaveAnswer({ questionId: question.id, answer: updatedAnswers.map((subInput) => subInput.value) });
+  };
+  
+  
 
   switch (question.type) {
     case 'input':
       return (
         <div className="flex space-x-4">
-          {question.subInputs.map((subInput) => (
+          {question.subInputs.map((subInput, index) => (
             <TextInput
               key={subInput.id}
               id={subInput.id}
               label={subInput.label}
               placeholder={subInput.placeholder}
-              currentAnswer={currentAnswer}
-              onAnswerChange={setCurrentAnswer}
+              currentAnswer={currentAnswer?.[index]?.value || ''}
+              onAnswerChange={(newAnswer) => handleSubAnswerChange(index, newAnswer)}
             />
           ))}
         </div>
       );
+    
     case 'textarea':
       return (
         <TextArea
           id={question.id}
           label={question.label}
           currentAnswer={currentAnswer}
-          onAnswerChange={setCurrentAnswer}
+          onAnswerChange={handleAnswerChange}
         />
       );
     case 'multiple_choice':
@@ -53,7 +74,7 @@ const QuestionRenderer = ({ question }) => {
           label={question.label}
           options={question.options}
           currentAnswer={currentAnswer}
-          onAnswerChange={setCurrentAnswer}
+          onAnswerChange={handleAnswerChange}
         />
       );
     case 'opinion_scale':
@@ -70,7 +91,7 @@ const QuestionRenderer = ({ question }) => {
           scaleMax={scaleMax}
           labels={labels}
           currentAnswer={currentAnswer}
-          onAnswerChange={setCurrentAnswer}
+          onAnswerChange={handleAnswerChange}
         />
       );
 
@@ -80,7 +101,7 @@ const QuestionRenderer = ({ question }) => {
           id={question.id}
           label={question.label}
           currentAnswer={currentAnswer}
-          onAnswerChange={setCurrentAnswer}
+          onAnswerChange={handleAnswerChange}
         />
       );
     case 'multiple_selection':
@@ -90,7 +111,7 @@ const QuestionRenderer = ({ question }) => {
           label={question.label}
           options={question.options}
           currentAnswer={currentAnswer}
-          onAnswerChange={setCurrentAnswer}
+          onAnswerChange={handleAnswerChange}
         />
       );
     case 'ranking':
@@ -100,7 +121,7 @@ const QuestionRenderer = ({ question }) => {
           label={question.label}
           options={question.options}
           currentAnswer={currentAnswer}
-          onAnswerChange={setCurrentAnswer}
+          onAnswerChange={handleAnswerChange}
         />
       );
     default:

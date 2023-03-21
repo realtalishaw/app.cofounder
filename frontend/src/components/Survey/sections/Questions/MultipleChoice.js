@@ -1,6 +1,11 @@
 import React from 'react';
 
-const MultipleChoice = ({ id, label, options }) => {
+const MultipleChoice = ({ id, label, options, currentAnswer, onAnswerChange }) => {
+  const handleChange = (event) => {
+    const { value } = event.target;
+    onAnswerChange(value);
+  };
+
   return (
     <div className="multiple-choice">
       <label htmlFor={id} className="block text-sm font-medium text-gray-700">
@@ -14,6 +19,8 @@ const MultipleChoice = ({ id, label, options }) => {
               id={`${id}-${index}`}
               name={id}
               value={option.value}
+              checked={currentAnswer === option.value}
+              onChange={handleChange}
               className="text-indigo-600 focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded"
             />
             <label

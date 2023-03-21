@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { registerUser } from '../services/authService';
 import { useNavigate } from 'react-router-dom';
 
+
 const HomePage = () => {
   const navigate = useNavigate();
     const [email, setEmail] = useState('');
@@ -19,7 +20,7 @@ const HomePage = () => {
         navigate('/co-founder-survey');
       } catch (error) {
         console.error(error);
-        setErrorMessage('Error during registration.');
+        setErrorMessage(error.message);
       }
     };
     

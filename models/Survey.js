@@ -19,6 +19,7 @@ const surveySchema = new Schema({
     required: true,
   },
   answers: [answerSchema],
+  submitted: { type: Boolean, default: false },
 });
 
 module.exports = mongoose.model('Survey', surveySchema);

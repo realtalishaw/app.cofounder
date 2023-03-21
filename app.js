@@ -9,6 +9,7 @@ const session = require('express-session');
 require('./config/passport')(passport);
 const authRoutes = require('./routes/auth');
 const bodyParser = require('body-parser');
+const surveyRoutes = require('./routes/survey');
 const cors = require('cors');
 app.use(cors());
 
@@ -20,6 +21,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use('/auth', authRoutes);
 app.use(express.static(path.join(__dirname, 'frontend/build')));
+app.use('/api/survey', surveyRoutes);
 
 
 

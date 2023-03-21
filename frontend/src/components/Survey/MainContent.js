@@ -2,62 +2,42 @@ import React, { useState, useEffect } from 'react';
 import ProgressBar from './ProgressBar';
 import NavigationButtons from './NavigationButtons';
 import { sections } from './sections';
-
-
+import { useNavigate } from 'react-router-dom';
+import useSurvey from './useSurvey';
 
 const MainContent = ({ activeSection, setActiveSection }) => {
-  
+  const navigate = useNavigate();
+  const {
+    savedAnswers,
+    currentSection,
+    setCurrentSection,
+    currentQuestion,
+    setCurrentQuestion,
+    updateAnswer,
+    submitSurvey
+  } = useSurvey(sections);
   const [showWelcomePage, setShowWelcomePage] = useState(true);
-  const [currentSection, setCurrentSection] = useState(0);
-  const [currentQuestion, setCurrentQuestion] = useState(0);
 
-  const calculateTotalQuestions = () => {
-    let total = 0;
-    for (let i = 0; i < sections.length; i++) {
-      const componentQuestions = sections[i].questions;
-      if (componentQuestions) {
-        total += componentQuestions.length;
-      }
-    }
-    return total;
-  };
-
-  const totalQuestions = calculateTotalQuestions();
-
-  const calculateTotalAnsweredQuestions = () => {
-    let totalAnsweredQuestions = 0;
-    for (let i = 0; i < currentSection; i++) {
-      totalAnsweredQuestions += sections[i].questions.length;
-    }
-    totalAnsweredQuestions += currentQuestion;
-    return totalAnsweredQuestions;
-  };
-
+  const totalQuestions = sections.reduce((acc, section) => acc + section.questions.length, 0);
   const progress =
     totalQuestions > 0
-      ? (calculateTotalAnsweredQuestions() / totalQuestions) * 100
+      ? ((currentSection * sections[currentSection].questions.length + currentQuestion) / totalQuestions) * 100
       : 0;
-
-
-
-
-      const submitSurvey = () => {
-        // Replace this with your actual submission logic
-        return new Promise((resolve, reject) => {
-          // Simulate a successful submission with a 1-second delay
-          setTimeout(() => {
-            resolve();
-          }, 1000);
-        });
-      };
-      
 
       const handleNext = () => {
         const currentSectionQuestions = sections[currentSection].questions;
+        const currentQuestionId = sections[currentSection].questions[currentQuestion].id;
+        const currentAnswer = savedAnswers[currentQuestionId]?.answer;
+      
+        if (currentAnswer !== undefined) {
+          updateAnswer({
+            questionId: currentQuestionId,
+            answer: currentAnswer,
+          });
+        }
       
         if (currentQuestion < currentSectionQuestions.length - 1) {
           setCurrentQuestion(currentQuestion + 1);
-          console.log("handleNext:", currentSection, currentQuestion);
         } else if (currentSection < sections.length - 1) {
           setCurrentSection((prevSection) => {
             const nextSection = prevSection + 1;
@@ -66,12 +46,9 @@ const MainContent = ({ activeSection, setActiveSection }) => {
             return nextSection;
           });
         } else {
-          // Survey completion logic
           submitSurvey()
             .then(() => {
-              // Redirect to the congratulations page
-              // Replace '/congratulations' with the actual path to the congratulations page
-              console.log("Hey good looking")
+              navigate('/thank-you');
             })
             .catch((error) => {
               console.error('Error submitting survey:', error);
@@ -81,35 +58,29 @@ const MainContent = ({ activeSection, setActiveSection }) => {
       
       
 
-
-
-  const handleBack = () => {
-    if (currentQuestion > 0) {
-      setCurrentQuestion(currentQuestion - 1);
-      console.log("handleBack:", currentSection, currentQuestion);
-
-    } else if (currentSection > 0) {
-      setCurrentSection(currentSection - 1);
-      setActiveSection(currentSection - 1); // Add this line
-      setCurrentQuestion(sections[currentSection - 1].questions.length - 1);
+      const handleBack = () => {
+        if (currentQuestion > 0) {
+          setCurrentQuestion(currentQuestion - 1);
+        } else if (currentSection > 0) {
+          setCurrentSection(currentSection - 1);
+          setActiveSection(currentSection - 1);
+          setCurrentQuestion(sections[currentSection - 1].questions.length - 1);
+        } else {
+          // Beginning of the survey; handle this case if needed
+        }
+      };
       
-    } else {
-      // Beginning of the survey; handle this case if needed
-    }
-  };
-
 
   const startSurvey = () => {
     setShowWelcomePage(false);
   };
 
   const SectionComponent = sections[currentSection].component;
-  
-  const totalAnsweredQuestions = calculateTotalAnsweredQuestions();
+
   useEffect(() => {
     setCurrentSection(activeSection);
     setCurrentQuestion(0); // Reset the currentQuestion when the section changes
-  }, [activeSection]);
+  }, [activeSection, setCurrentQuestion, setCurrentSection]);
 
   return (
     <>
@@ -125,25 +96,30 @@ const MainContent = ({ activeSection, setActiveSection }) => {
         <div className="survey-main">
           <ProgressBar progress={progress} />
           <div className='flex flex-col pt-32 items-center'>
-            {SectionComponent && <SectionComponent currentQuestion={currentQuestion} questions={sections[currentSection].questions} />}
+            {SectionComponent && (
+              <SectionComponent
+                currentQuestion={currentQuestion}
+                questions={sections[currentSection].questions}
+                savedAnswers={savedAnswers}
+                onSaveAnswer={updateAnswer}
+              />
+            
+            )}
 
 
-          </div>
+
+</div>
           <div className=" flex flex-col items-center justify-between pt-6">
-          <NavigationButtons
-          handleBack={handleBack}
-          handleNext={handleNext}
-          currentSection={currentSection}
-          currentQuestion={currentQuestion}
-          sections={sections}
-          totalAnsweredQuestions={totalAnsweredQuestions}
-          totalQuestions={totalQuestions}
-        />
+            <NavigationButtons
+              handleBack={handleBack}
+              handleNext={handleNext}
+              currentSection={currentSection}
+              currentQuestion={currentQuestion}
+              sections={sections}
+              totalQuestions={totalQuestions}
+            />
           </div>
         </div>
-
-
-
       )}
     </>
   );

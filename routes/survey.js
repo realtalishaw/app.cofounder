@@ -1,9 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const Survey = require('../models/Survey');
+const authenticateJWT = require('../middleware/auth');
 
 // Route to save answers
-router.post('/save-answers', async (req, res) => {
+router.post('/save-answers', authenticateJWT, async (req, res) => {
   const { userId, questionId, answer } = req.body;
 
   try {
@@ -25,18 +26,18 @@ router.post('/save-answers', async (req, res) => {
     }
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'Something went wrong' });
+    res.status(500).json({ error: error });
   }
 });
 
 // Route to submit survey
-router.post('/submit-survey', async (req, res) => {
+router.post('/submit-survey', authenticateJWT, async (req, res) => {
   const { userId, answers } = req.body;
 
   try {
     const survey = await Survey.findOneAndUpdate(
       { userId },
-      { $set: { answers } },
+      { $set: { answers, submitted: true } },
       { new: true }
     );
 
@@ -46,6 +47,7 @@ router.post('/submit-survey', async (req, res) => {
       const newSurvey = new Survey({
         userId,
         answers,
+        submitted: true,
       });
       await newSurvey.save();
       res.json({ success: true });
@@ -56,8 +58,9 @@ router.post('/submit-survey', async (req, res) => {
   }
 });
 
+
 // Route to edit answers
-router.post('/edit-answers', async (req, res) => {
+router.post('/edit-answers', authenticateJWT, async (req, res) => {
   const { userId, questionId, answer } = req.body;
 
   try {
@@ -71,6 +74,24 @@ router.post('/edit-answers', async (req, res) => {
       res.json({ success: true });
     } else {
       res.status(404).json({ error: 'Survey not found' });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Something went wrong' });
+  }
+});
+
+// Route to get saved answers
+router.get('/get-answers', authenticateJWT, async (req, res) => {
+  const { userId } = req.user;
+
+  try {
+    const survey = await Survey.findOne({ userId });
+
+    if (survey) {
+      res.json({ answers: survey.answers });
+    } else {
+      res.status(404).json({ error: 'No saved answers found' });
     }
   } catch (error) {
     console.error(error);
