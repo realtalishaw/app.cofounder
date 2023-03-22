@@ -5,6 +5,7 @@ import LoginPage from './components/pages/Login';
 import Survey from './components/Survey/Survey';
 import UserDashboard from './components/pages/UserDashboard'; // Add this import
 import ProtectedRoute from './ProtectedRoute';
+import ThankYouPage from './components/pages/ThankYouPage';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -20,6 +21,7 @@ function App() {
         <Routes>
           <Route index element={<HomePage />} path="/" />
           <Route element={<LoginPage />} path="/login" />
+          <Route element={<ThankYouPage />} path="/thank-you" />
           <Route element={<ProtectedRoute isAuthenticated={isAuthenticated} component={Survey} />} path="/co-founder-survey" />
           <Route element={<ProtectedRoute isAuthenticated={isAuthenticated} component={UserDashboard} />} path="/dashboard" /> {/* Add this line */}
         </Routes>

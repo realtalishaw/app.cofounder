@@ -7,7 +7,7 @@ import YesNo from './YesNo';
 import MultipleSelection from './MultipleSelection';
 import Ranking from './Ranking';
 
-const QuestionRenderer = ({ question, formMethods }) => { // Remove the duplicate line
+const QuestionRenderer = ({ question, formMethods }) => { 
 
 
   switch (question.type) {

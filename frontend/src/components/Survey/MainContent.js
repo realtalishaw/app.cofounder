@@ -2,11 +2,13 @@ import React, { useState, useEffect } from 'react';
 import ProgressBar from './ProgressBar';
 import NavigationButtons from './NavigationButtons';
 import { sections } from './sections';
+import { useNavigate } from 'react-router-dom';
 
 const MainContent = ({ activeSection, setActiveSection, formMethods, onSubmit }) => {
   const [showWelcomePage, setShowWelcomePage] = useState(true);
   const [currentSection, setCurrentSection] = useState(0);
   const [currentQuestion, setCurrentQuestion] = useState(0);
+  const navigate = useNavigate();
 
 
   const calculateTotalQuestions = () => {
@@ -36,19 +38,20 @@ const MainContent = ({ activeSection, setActiveSection, formMethods, onSubmit })
       ? (calculateTotalAnsweredQuestions() / totalQuestions) * 100
       : 0;
 
-  const handleNext = () => {
-    const currentSectionQuestions = sections[currentSection].questions;
-    if (currentQuestion < currentSectionQuestions.length - 1) {
-      setCurrentQuestion(currentQuestion + 1);
-    } else if (currentSection < sections.length - 1) {
-      setCurrentSection(currentSection + 1);
-      setActiveSection(currentSection + 1);
-      setCurrentQuestion(0);
-    } else {
-      // Survey completion logic
-      onSubmit();
-    }
-  };
+      const handleNext = () => {
+        const currentSectionQuestions = sections[currentSection].questions;
+        if (currentQuestion < currentSectionQuestions.length - 1) {
+          setCurrentQuestion(currentQuestion + 1);
+        } else if (currentSection < sections.length - 1) {
+          setCurrentSection(currentSection + 1);
+          setActiveSection(currentSection + 1);
+          setCurrentQuestion(0);
+        } else {
+          // Survey completion logic
+          onSubmit();
+          navigate('/thank-you'); // Navigate to the thank-you page
+        }
+      };
 
 
   const handleBack = () => {

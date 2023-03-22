@@ -62,13 +62,13 @@ export const questions = [{
 },
 ];
 
-const CoFounderPreferences = ({ currentQuestion, formMethods, onSubmit }) => {
+const CoFounderPreferences = ({ currentQuestion, formMethods }) => {
   const question = questions[currentQuestion];
 
   return (
     <div className="co-founder-preferences w-3/4 p-6">
       <h2 className="text-2xl font-bold text-center">{question.text}</h2>
-      <QuestionRenderer question={question} formMethods={formMethods} onSubmit={onSubmit} />
+      <QuestionRenderer question={question} formMethods={formMethods} />
     </div>
   );
 };

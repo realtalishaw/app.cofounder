@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { loginUser } from '../services/authService';
-
+import { useNavigate } from 'react-router-dom';
 function LoginPage() {
+  const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
@@ -12,7 +13,7 @@ function LoginPage() {
     try {
       const response = await loginUser(email, password);
       console.log(response);
-      alert(response.message);
+      navigate('/co-founder-survey');
     } catch (error) {
       console.error(error);
       setErrorMessage('Error during login.');

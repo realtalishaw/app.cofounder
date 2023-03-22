@@ -37,9 +37,12 @@ export const questions = [
     },
     {
       id: 'startup_name',
-      type: 'textarea',
+      type: 'input',
+      subInputs: [
+        {id: "startup_name", label: 'Startup Name', placeholder: "Startup Name"}
+      ],
       text: "If you're comfortable sharing, please provide the name of your current startup or the working title for your startup idea.",
-      label: 'Startup Name',
+
     },
     {
       id: 'company_description',
@@ -118,13 +121,13 @@ export const questions = [
       },
   ];
   
-const BasicInformation = ({ currentQuestion, formMethods, onSubmit }) => {
+const BasicInformation = ({ currentQuestion, formMethods }) => {
   const question = questions[currentQuestion];
 
   return (
     <div className="basic-information w-3/4 p-6">
       <h2 className="text-2xl font-bold p-2 text-center">{question.text}</h2>
-      <QuestionRenderer question={question} formMethods={formMethods} onSubmit={onSubmit} />
+      <QuestionRenderer question={question} formMethods={formMethods}  />
 
     </div>
   );
