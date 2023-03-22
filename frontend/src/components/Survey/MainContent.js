@@ -3,12 +3,15 @@ import ProgressBar from './ProgressBar';
 import NavigationButtons from './NavigationButtons';
 import { sections } from './sections';
 import { useNavigate } from 'react-router-dom';
+import { saveSurvey, getSurveyAnswers } from '../services/surveyService';
 
-const MainContent = ({ activeSection, setActiveSection, formMethods, onSubmit }) => {
+
+const MainContent = ({ activeSection, setActiveSection, formMethods, onSubmit, errorSections, setErrorSections }) => {
   const [showWelcomePage, setShowWelcomePage] = useState(true);
   const [currentSection, setCurrentSection] = useState(0);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const navigate = useNavigate();
+  const [errorMessage, setErrorMessage] = useState('');
 
 
   const calculateTotalQuestions = () => {
@@ -21,9 +24,7 @@ const MainContent = ({ activeSection, setActiveSection, formMethods, onSubmit })
     }
     return total;
   };
-
   const totalQuestions = calculateTotalQuestions();
-
   const calculateTotalAnsweredQuestions = () => {
     let totalAnsweredQuestions = 0;
     for (let i = 0; i < currentSection; i++) {
@@ -32,13 +33,15 @@ const MainContent = ({ activeSection, setActiveSection, formMethods, onSubmit })
     totalAnsweredQuestions += currentQuestion;
     return totalAnsweredQuestions;
   };
-
   const progress =
     totalQuestions > 0
       ? (calculateTotalAnsweredQuestions() / totalQuestions) * 100
       : 0;
-
-      const handleNext = () => {
+      const handleNext = async () => {
+        // Save the survey data before moving to the next question
+        const formData = formMethods.getValues();
+        await saveSurvey(formData);
+      
         const currentSectionQuestions = sections[currentSection].questions;
         if (currentQuestion < currentSectionQuestions.length - 1) {
           setCurrentQuestion(currentQuestion + 1);
@@ -47,12 +50,27 @@ const MainContent = ({ activeSection, setActiveSection, formMethods, onSubmit })
           setActiveSection(currentSection + 1);
           setCurrentQuestion(0);
         } else {
-          // Survey completion logic
-          onSubmit();
-          navigate('/thank-you'); // Navigate to the thank-you page
+          if (totalAnsweredQuestions === totalQuestions) {
+            onSubmit();
+            navigate('/thank-you'); // Navigate to the thank-you page
+          } else {
+            setErrorMessage('Please complete all questions');
+      
+            const incompleteSections = [];
+            sections.forEach((section, index) => {
+              if (!section.questions.every(question => {
+                const value = formMethods.getValues()[question.name];
+                return value !== undefined;
+              })) {
+                incompleteSections.push(index);
+              }
+            });
+            setErrorSections(incompleteSections);
+            console.log("Error Sections:", incompleteSections)
+          }
         }
       };
-
+      ;
 
   const handleBack = () => {
     if (currentQuestion > 0) {
@@ -66,7 +84,6 @@ const MainContent = ({ activeSection, setActiveSection, formMethods, onSubmit })
     }
   };
 
-
   const startSurvey = () => {
     setShowWelcomePage(false);
   };
@@ -78,6 +95,27 @@ const MainContent = ({ activeSection, setActiveSection, formMethods, onSubmit })
     setCurrentSection(activeSection);
     setCurrentQuestion(0); // Reset the currentQuestion when the section changes
   }, [activeSection]);
+  
+  const { setValue } = formMethods;
+  
+
+  useEffect(() => {
+    const fetchSurveyAnswers = async () => {
+      const surveyAnswer = await getSurveyAnswers();
+      if (surveyAnswer) {
+        const { answers } = surveyAnswer;
+        for (const key in answers) {
+          if (Object.hasOwnProperty.call(answers, key)) {
+            setValue(key, answers[key]);
+          }
+        }
+      }
+    };
+  
+    fetchSurveyAnswers();
+  }, [setValue]);
+  ;
+  
 
   return (
     <>
@@ -94,13 +132,15 @@ const MainContent = ({ activeSection, setActiveSection, formMethods, onSubmit })
           <ProgressBar progress={progress} />
 
           <form className='flex flex-col pt-32 items-center' onSubmit={formMethods.handleSubmit(onSubmit)}>
-            {SectionComponent && (
-              <SectionComponent
-                formMethods={formMethods}
-                currentQuestion={currentQuestion}
-                questions={sections[currentSection].questions}
-              />
-            )}
+          {SectionComponent && (
+  <SectionComponent
+    formMethods={formMethods}
+    currentQuestion={currentQuestion}
+    questions={sections[currentSection].questions}
+    errorMessage={errorMessage}
+  />
+)}
+
           </form>
 
 
@@ -114,7 +154,9 @@ const MainContent = ({ activeSection, setActiveSection, formMethods, onSubmit })
               totalAnsweredQuestions={totalAnsweredQuestions}
               totalQuestions={totalQuestions}
             />
+             {errorMessage && <div className="error-message text-red-600 py-3 font-bold text-lg">{errorMessage}</div>}
           </div>
+         
         </div>
       )}
     </>

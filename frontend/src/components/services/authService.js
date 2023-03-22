@@ -1,7 +1,7 @@
 // authService.js
 import axios from 'axios';
 
-const API_URL = 'https://app.findacofounder.online/auth';
+const API_URL = 'https://api.findacofounder.online/auth';
 
 export async function registerUser(email, password) {
   try {

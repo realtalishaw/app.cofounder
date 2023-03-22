@@ -2,6 +2,7 @@ import { Fragment, useState } from 'react'
 import MainContent from './MainContent';
 import { Dialog, Transition } from '@headlessui/react'
 import { sections } from './sections/index'
+import {submitSurvey } from '../services/surveyService';
 
 
 import {
@@ -12,7 +13,8 @@ import {
 
 
 
-export default function Sidebar({ formMethods, activeSection, setActiveSection, setCurrentSection }) {
+export default function Sidebar({ formMethods, activeSection, setActiveSection, setCurrentSection, setErrorSections, errorSections }) {
+  
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
@@ -81,25 +83,33 @@ export default function Sidebar({ formMethods, activeSection, setActiveSection, 
                       </h2>
                     </div>
                     <nav className="mt-5 space-y-1 px-2">
-                      {sections.map((section, index) => (
-                        <a
-                          key={index}
-                          href={`#${section.title}`}
-                          onClick={() => setActiveSection(index)}
-                          className={`group flex items-center rounded-md px-2 py-2 text-base font-medium cursor-pointer ${index === activeSection
-                              ? 'bg-gray-200 text-gray-900'
-                              : 'text-gray-600 hover:bg-gray-200 hover:text-gray-900'
-                            }`}
-                        >
-                          <section.icon
-                            className={`mr-4 h-6 w-6 flex-shrink-0 ${index === activeSection ? 'text-gray-500' : 'text-gray-400 group-hover:text-gray-500'
-                              }`}
-                            aria-hidden="true"
-                          />
-                          {section.title}
-                        </a>
-                      ))}
-                    </nav>
+  {sections.map((section, index) => (
+    <a
+      key={index}
+      href={`#${section.title}`}
+      onClick={() => setActiveSection(index)}
+      className={`group flex items-center rounded-md px-2 py-2 text-base font-medium cursor-pointer ${
+        index === activeSection
+          ? 'bg-gray-200 text-gray-900'
+          : 'text-gray-600 hover:bg-gray-200 hover:text-gray-900'
+      }`}
+    >
+      <section.icon
+        className={`mr-4 h-6 w-6 flex-shrink-0 ${
+          errorSections.includes(index)
+            ? 'text-red-500'
+            : index === activeSection
+            ? 'text-gray-500'
+            : 'text-gray-400 group-hover:text-gray-500'
+        }`}
+        aria-hidden="true"
+      />
+      {section.title}
+    </a>
+  ))}
+</nav>
+
+
                   </div>
                   <div className="flex flex-shrink-0 border-t border-gray-200 p-4">
                     <a href="/" className="group block flex-shrink-0">
@@ -138,31 +148,38 @@ export default function Sidebar({ formMethods, activeSection, setActiveSection, 
                   Find a Co-Founder
                 </h2>
               </div>
-              <nav className="mt-5 space-y-1 px-2">
-                {sections.map((section, index) => (
-                  <a
-                    key={index}
-                    href={`#${section.title}`}
-                    onClick={() => setActiveSection(index)}
-                    className={`group flex items-center rounded-md px-2 py-2 text-base font-medium cursor-pointer ${index === activeSection
-                        ? 'bg-gray-200 text-gray-900'
-                        : 'text-gray-600 hover:bg-gray-200 hover:text-gray-900'
-                      }`}
-                  >
-                    <section.icon
-                      className={`mr-4 h-6 w-6 flex-shrink-0 ${index === activeSection ? 'text-gray-500' : 'text-gray-400 group-hover:text-gray-500'
-                        }`}
-                      aria-hidden="true"
-                    />
-                    {section.title}
-                  </a>
-                ))}
-              </nav>
+             <nav className="mt-5 space-y-1 px-2">
+  {sections.map((section, index) => (
+    <a
+      key={index}
+      href={`#${section.title}`}
+      onClick={() => setActiveSection(index)}
+      className={`group flex items-center rounded-md px-2 py-2 text-base font-medium cursor-pointer ${
+        index === activeSection
+          ? 'bg-gray-200 text-gray-900'
+          : 'text-gray-600 hover:bg-gray-200 hover:text-gray-900'
+      }`}
+    >
+      <section.icon
+        className={`mr-4 h-6 w-6 flex-shrink-0 ${
+          errorSections.includes(index)
+            ? 'text-red-500'
+            : index === activeSection
+            ? 'text-gray-500'
+            : 'text-gray-400 group-hover:text-gray-500'
+        }`}
+        aria-hidden="true"
+      />
+      {section.title}
+    </a>
+  ))}
+</nav>
+
 
 
             </div>
             <div className="flex flex-shrink-0 border-t border-gray-200 p-4">
-              <a href="/" className="group block w-full flex-shrink-0">
+              <a href="/dashboard" className="group block w-full flex-shrink-0">
                 <div className="flex items-center">
                   <div>
                     <img
@@ -173,7 +190,7 @@ export default function Sidebar({ formMethods, activeSection, setActiveSection, 
                   </div>
                   <div className="ml-3">
                     <p className="text-sm font-medium text-gray-700 group-hover:text-gray-900">Tom Cook</p>
-                    <p className="text-xs font-medium text-gray-500 group-hover:text-gray-700">View profile</p>
+                    <p className="text-xs font-medium text-gray-500 group-hover:text-gray-700">View Dashboard</p>
                   </div>
                 </div>
               </a>
@@ -197,12 +214,14 @@ export default function Sidebar({ formMethods, activeSection, setActiveSection, 
                 <h1 className="text-2xl font-semibold text-gray-900">Co-Founder Matching Survey</h1>
               </div>
               <div className="mx-auto w-full px-4 sm:px-6 lg:px-8"><div className="survey-content">
-                <MainContent
-                  activeSection={activeSection}
-                  setActiveSection={setActiveSection}
-                  formMethods={formMethods}
-                  onSubmit={formMethods.handleSubmit(data => console.log('Form data:', data))}
-                />
+              <MainContent
+  activeSection={activeSection}
+  setActiveSection={setActiveSection}
+  formMethods={formMethods}
+  onSubmit={formMethods.handleSubmit(data => submitSurvey(data))}
+  errorSections={errorSections}
+  setErrorSections={setErrorSections}
+/>
               </div></div>
             </div>
           </main>

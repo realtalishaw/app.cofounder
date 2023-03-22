@@ -4,32 +4,24 @@ const path = require('path');
 const app = express();
 const port = 3000;
 const mongoose = require('mongoose');
-const passport = require('passport');
-const session = require('express-session');
-require('./config/passport')(passport);
-const authRoutes = require('./routes/auth');
-const bodyParser = require('body-parser');
-const surveyRoutes = require('./routes/survey');
+
+
+
+
+const bodyParser = require('body-parser');;
 const cors = require('cors');
 app.use(cors());
 
-
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-app.use(session({ secret: 'your-session-secret', resave: false, saveUninitialized: false }));
-app.use(passport.initialize());
-app.use(passport.session());
-app.use('/auth', authRoutes);
-app.use('/api/survey', surveyRoutes);
+
+
 app.use(express.static(path.join(__dirname, 'frontend/build')));
 
-
-
-
-
+// Move the catch-all route after all other routes
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'frontend/build', 'index.html'));
-}); 
+});
 
 
 app.listen(port, () => {

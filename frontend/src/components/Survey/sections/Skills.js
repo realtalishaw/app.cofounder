@@ -60,6 +60,7 @@ export const questions = [
     id: 'skills_10',
     type: 'textarea',
     text: "Are there any specific certifications, degrees, or awards that you possess related to your skills?",
+    label: "Skills",
   },
 ];
 

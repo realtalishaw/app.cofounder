@@ -5,6 +5,9 @@ import Sidebar from './Sidebar';
 const Survey = () => {
   const [activeSection, setActiveSection] = useState(0);
   const methods = useForm();
+  const [errorSections, setErrorSections] = useState([]);
+
+
 
   // logic for handling local storage
 
@@ -15,7 +18,10 @@ const Survey = () => {
           formMethods={methods}
           activeSection={activeSection}
           setActiveSection={setActiveSection}
+          errorSections={errorSections}
+          setErrorSections={setErrorSections}
         />
+
       </div>
     </div>
   );
