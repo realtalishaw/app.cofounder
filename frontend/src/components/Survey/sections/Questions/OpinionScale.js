@@ -6,7 +6,9 @@ const OpinionScale = ({
   scaleMin = 1,
   scaleMax = 5,
   labels = ['Strongly Disagree', 'Disagree', 'Neutral', 'Agree', 'Strongly Agree'],
+  formMethods
 }) => {
+  const { register } = formMethods;
   return (
     <div className="opinion-scale">
       <label htmlFor={id} className="block text-sm font-medium text-gray-700">
@@ -18,6 +20,7 @@ const OpinionScale = ({
             <input
               type="radio"
               id={`${id}-${value}`}
+              {...register(id)}
               name={id}
               value={value}
               className="text-indigo-600 focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300"

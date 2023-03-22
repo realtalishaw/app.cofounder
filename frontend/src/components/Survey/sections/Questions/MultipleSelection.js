@@ -1,7 +1,9 @@
 // src/Questions/MultipleSelection.js
 import React from 'react';
 
-const MultipleSelection = ({ id, label, options }) => {
+const MultipleSelection = ({ id, label, options, formMethods }) => {
+  const { register } = formMethods;
+
   return (
     <div className="multiple-selection">
       <label htmlFor={id} className="block text-sm font-medium text-gray-700">
@@ -13,6 +15,7 @@ const MultipleSelection = ({ id, label, options }) => {
             <input
               type="checkbox"
               id={`${id}-${index}`}
+              {...register(id)}
               name={id}
               value={option.value}
               className="text-indigo-600 focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded"

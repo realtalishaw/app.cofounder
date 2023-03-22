@@ -1,7 +1,8 @@
 // src/Questions/Ranking.js
 import React, { useState, useEffect } from 'react';
 
-const Ranking = ({ id, label, options }) => {
+const Ranking = ({ id, label, options, formMethods }) => {
+  const { register, setValue } = formMethods;
   const [rankings, setRankings] = useState(
     options.map((option) => ({ ...option, rank: 0 }))
   );
@@ -11,6 +12,7 @@ const Ranking = ({ id, label, options }) => {
     const newRankings = [...rankings];
     newRankings[index].rank = parseInt(event.target.value);
     setRankings(newRankings);
+    setValue(`${id}-${index}`, parseInt(event.target.value));
   };
 
   useEffect(() => {
@@ -19,6 +21,12 @@ const Ranking = ({ id, label, options }) => {
     );
     setHasError(uniqueRanks.size !== rankings.filter((option) => option.rank !== 0).length);
   }, [rankings]);
+
+  useEffect(() => {
+    options.forEach((option, index) => {
+      register(`${id}-${index}`);
+    });
+  }, [register, id, options]);
 
   return (
     <div className="ranking">

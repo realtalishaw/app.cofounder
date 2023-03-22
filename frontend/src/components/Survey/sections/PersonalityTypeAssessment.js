@@ -1,7 +1,6 @@
 // src/sections/PersonalityType.js
 import React from 'react';
 import QuestionRenderer from './Questions/QuestionRenderer';
-import { saveAnswer } from '../../services/answerService';
 
 export const questions = [
     {
@@ -81,21 +80,13 @@ export const questions = [
     },
   ];
   
-const PersonalityType = ({ currentQuestion, savedAnswers }) => {
+const PersonalityType = ({ currentQuestion, formMethods, onSubmit }) => {
   const question = questions[currentQuestion];
 
   return (
     <div className="personality-type w-3/4 p-6">
       <h2 className="text-2xl font-bold text-center">{question.text}</h2>
-      <QuestionRenderer
-
-question={question}
-
-savedAnswers={savedAnswers}
-
-onSaveAnswer={saveAnswer}
-
-/>
+      <QuestionRenderer question={question} formMethods={formMethods} onSubmit={onSubmit} />
     </div>
   );
 };

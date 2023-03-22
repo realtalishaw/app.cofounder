@@ -9,7 +9,6 @@ const session = require('express-session');
 require('./config/passport')(passport);
 const authRoutes = require('./routes/auth');
 const bodyParser = require('body-parser');
-const surveyRoutes = require('./routes/survey');
 const cors = require('cors');
 app.use(cors());
 

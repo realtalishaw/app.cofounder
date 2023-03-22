@@ -1,11 +1,17 @@
 // src/Questions/YesNo.js
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
-const YesNo = ({ id, label }) => {
+const YesNo = ({ id, label, formMethods }) => {
+  const { register, setValue } = formMethods;
   const [selected, setSelected] = useState('');
+
+  useEffect(() => {
+    register(id);
+  }, [register, id]);
 
   const handleOptionClick = (option) => {
     setSelected(option);
+    setValue(id, option);
   };
 
   return (

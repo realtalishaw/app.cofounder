@@ -19,7 +19,7 @@ const NavigationButtons = ({
 
 
 
-  const NavigationButton = ({ text, disabled, onClick, extraClassName }) => {
+  const NavigationButton = ({ text, disabled, onClick, extraClassName  }) => {
     return (
       <button
         className={`${

@@ -12,10 +12,8 @@ import {
 
 
 
-
-export default function Sidebar({ activeSection, setActiveSection, setCurrentSection }) {
-  const [sidebarOpen, setSidebarOpen] = useState(false)
- 
+export default function Sidebar({ formMethods, activeSection, setActiveSection, setCurrentSection }) {
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
     <>
@@ -75,35 +73,33 @@ export default function Sidebar({ activeSection, setActiveSection, setCurrentSec
                   </Transition.Child>
                   <div className="h-0 flex-1 overflow-y-auto pt-5 pb-4">
                     <div className="flex flex-shrink-0 items-center px-4">
-                    <h2>
-          <span role="img" aria-label="Rocket">
-            🚀
-          </span>{' '}
-          Find a Co-Founder
-        </h2>
+                      <h2>
+                        <span role="img" aria-label="Rocket">
+                          🚀
+                        </span>{' '}
+                        Find a Co-Founder
+                      </h2>
                     </div>
                     <nav className="mt-5 space-y-1 px-2">
-      {sections.map((section, index) => (
-        <a
-          key={index}
-          href={`#${section.title}`}
-          onClick={() => setActiveSection(index)}
-          className={`group flex items-center rounded-md px-2 py-2 text-base font-medium cursor-pointer ${
-            index === activeSection
-              ? 'bg-gray-200 text-gray-900'
-              : 'text-gray-600 hover:bg-gray-200 hover:text-gray-900'
-          }`}
-        >
-          <section.icon
-            className={`mr-4 h-6 w-6 flex-shrink-0 ${
-              index === activeSection ? 'text-gray-500' : 'text-gray-400 group-hover:text-gray-500'
-            }`}
-            aria-hidden="true"
-          />
-          {section.title}
-        </a>
-      ))}
-    </nav>
+                      {sections.map((section, index) => (
+                        <a
+                          key={index}
+                          href={`#${section.title}`}
+                          onClick={() => setActiveSection(index)}
+                          className={`group flex items-center rounded-md px-2 py-2 text-base font-medium cursor-pointer ${index === activeSection
+                              ? 'bg-gray-200 text-gray-900'
+                              : 'text-gray-600 hover:bg-gray-200 hover:text-gray-900'
+                            }`}
+                        >
+                          <section.icon
+                            className={`mr-4 h-6 w-6 flex-shrink-0 ${index === activeSection ? 'text-gray-500' : 'text-gray-400 group-hover:text-gray-500'
+                              }`}
+                            aria-hidden="true"
+                          />
+                          {section.title}
+                        </a>
+                      ))}
+                    </nav>
                   </div>
                   <div className="flex flex-shrink-0 border-t border-gray-200 p-4">
                     <a href="/" className="group block flex-shrink-0">
@@ -135,36 +131,34 @@ export default function Sidebar({ activeSection, setActiveSection, setCurrentSec
           <div className="flex min-h-0 flex-1 flex-col border-r border-gray-200 bg-white">
             <div className="flex flex-1 flex-col overflow-y-auto pt-5 pb-4">
               <div className="flex flex-shrink-0 items-center px-4">
-              <h2>
-          <span role="img" aria-label="Rocket">
-            🚀
-          </span>{' '}
-          Find a Co-Founder
-        </h2>
+                <h2>
+                  <span role="img" aria-label="Rocket">
+                    🚀
+                  </span>{' '}
+                  Find a Co-Founder
+                </h2>
               </div>
               <nav className="mt-5 space-y-1 px-2">
-      {sections.map((section, index) => (
-        <a
-          key={index}
-          href={`#${section.title}`}
-          onClick={() => setActiveSection(index)}
-          className={`group flex items-center rounded-md px-2 py-2 text-base font-medium cursor-pointer ${
-            index === activeSection
-              ? 'bg-gray-200 text-gray-900'
-              : 'text-gray-600 hover:bg-gray-200 hover:text-gray-900'
-          }`}
-        >
-          <section.icon
-            className={`mr-4 h-6 w-6 flex-shrink-0 ${
-              index === activeSection ? 'text-gray-500' : 'text-gray-400 group-hover:text-gray-500'
-            }`}
-            aria-hidden="true"
-          />
-          {section.title}
-        </a>
-      ))}
-    </nav>
-  
+                {sections.map((section, index) => (
+                  <a
+                    key={index}
+                    href={`#${section.title}`}
+                    onClick={() => setActiveSection(index)}
+                    className={`group flex items-center rounded-md px-2 py-2 text-base font-medium cursor-pointer ${index === activeSection
+                        ? 'bg-gray-200 text-gray-900'
+                        : 'text-gray-600 hover:bg-gray-200 hover:text-gray-900'
+                      }`}
+                  >
+                    <section.icon
+                      className={`mr-4 h-6 w-6 flex-shrink-0 ${index === activeSection ? 'text-gray-500' : 'text-gray-400 group-hover:text-gray-500'
+                        }`}
+                      aria-hidden="true"
+                    />
+                    {section.title}
+                  </a>
+                ))}
+              </nav>
+
 
             </div>
             <div className="flex flex-shrink-0 border-t border-gray-200 p-4">
@@ -203,8 +197,13 @@ export default function Sidebar({ activeSection, setActiveSection, setCurrentSec
                 <h1 className="text-2xl font-semibold text-gray-900">Co-Founder Matching Survey</h1>
               </div>
               <div className="mx-auto w-full px-4 sm:px-6 lg:px-8"><div className="survey-content">
-              <MainContent activeSection={activeSection} setActiveSection={setActiveSection} />
-      </div></div>
+                <MainContent
+                  activeSection={activeSection}
+                  setActiveSection={setActiveSection}
+                  formMethods={formMethods}
+                  onSubmit={formMethods.handleSubmit(data => console.log('Form data:', data))}
+                />
+              </div></div>
             </div>
           </main>
         </div>

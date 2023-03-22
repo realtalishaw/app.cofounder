@@ -1,10 +1,7 @@
 import React from 'react';
 
-const MultipleChoice = ({ id, label, options, currentAnswer, onAnswerChange }) => {
-  const handleChange = (event) => {
-    const { value } = event.target;
-    onAnswerChange(value);
-  };
+const MultipleChoice = ({ id, label, options, formMethods }) => {
+  const { register } = formMethods;
 
   return (
     <div className="multiple-choice">
@@ -17,10 +14,8 @@ const MultipleChoice = ({ id, label, options, currentAnswer, onAnswerChange }) =
             <input
               type="radio"
               id={`${id}-${index}`}
-              name={id}
+              {...register(id)}
               value={option.value}
-              checked={currentAnswer === option.value}
-              onChange={handleChange}
               className="text-indigo-600 focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded"
             />
             <label

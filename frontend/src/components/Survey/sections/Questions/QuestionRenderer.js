@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'; // Fixed typo: useEffect
+import React from 'react'; // Fixed typo: useEffect
 import TextInput from './TextInput';
 import TextArea from './TextArea';
 import MultipleChoice from './MultipleChoice';
@@ -7,39 +7,8 @@ import YesNo from './YesNo';
 import MultipleSelection from './MultipleSelection';
 import Ranking from './Ranking';
 
-const QuestionRenderer = ({ question, savedAnswers = {}, onSaveAnswer }) => { // Remove the duplicate line
-  const savedAnswer = savedAnswers[question.id];
-  const [currentAnswer, setCurrentAnswer] = useState(() => {
-    if (savedAnswer?.answer) {
-      return savedAnswer.answer;
-    }
-    return null;
-  });
+const QuestionRenderer = ({ question, formMethods }) => { // Remove the duplicate line
 
-  useEffect(() => {
-    if (onSaveAnswer && currentAnswer !== null) {
-      onSaveAnswer({
-        questionId: question.id,
-        answer: currentAnswer,
-      });
-    }
-  }, [currentAnswer, onSaveAnswer, question.id]);
-
-  const handleAnswerChange = (newAnswer) => {
-    setCurrentAnswer(newAnswer);
-    onSaveAnswer({ questionId: question.id, answer: newAnswer });
-  };
-  
-  const handleSubAnswerChange = (index, newAnswer) => {
-    const updatedAnswers = currentAnswer
-      ? [...currentAnswer]
-      : question.subInputs.map((subInput) => ({ ...subInput, value: '' }));
-    updatedAnswers[index].value = newAnswer;
-    setCurrentAnswer(updatedAnswers);
-    onSaveAnswer({ questionId: question.id, answer: updatedAnswers.map((subInput) => subInput.value) });
-  };
-  
-  
 
   switch (question.type) {
     case 'input':
@@ -51,8 +20,7 @@ const QuestionRenderer = ({ question, savedAnswers = {}, onSaveAnswer }) => { //
               id={subInput.id}
               label={subInput.label}
               placeholder={subInput.placeholder}
-              currentAnswer={currentAnswer?.[index]?.value || ''}
-              onAnswerChange={(newAnswer) => handleSubAnswerChange(index, newAnswer)}
+              formMethods={formMethods}
             />
           ))}
         </div>
@@ -63,8 +31,7 @@ const QuestionRenderer = ({ question, savedAnswers = {}, onSaveAnswer }) => { //
         <TextArea
           id={question.id}
           label={question.label}
-          currentAnswer={currentAnswer}
-          onAnswerChange={handleAnswerChange}
+          formMethods={formMethods}
         />
       );
     case 'multiple_choice':
@@ -73,8 +40,7 @@ const QuestionRenderer = ({ question, savedAnswers = {}, onSaveAnswer }) => { //
           id={question.id}
           label={question.label}
           options={question.options}
-          currentAnswer={currentAnswer}
-          onAnswerChange={handleAnswerChange}
+          formMethods={formMethods}
         />
       );
     case 'opinion_scale':
@@ -90,8 +56,7 @@ const QuestionRenderer = ({ question, savedAnswers = {}, onSaveAnswer }) => { //
           scaleMin={scaleMin}
           scaleMax={scaleMax}
           labels={labels}
-          currentAnswer={currentAnswer}
-          onAnswerChange={handleAnswerChange}
+          formMethods={formMethods}
         />
       );
 
@@ -100,8 +65,7 @@ const QuestionRenderer = ({ question, savedAnswers = {}, onSaveAnswer }) => { //
         <YesNo
           id={question.id}
           label={question.label}
-          currentAnswer={currentAnswer}
-          onAnswerChange={handleAnswerChange}
+          formMethods={formMethods}
         />
       );
     case 'multiple_selection':
@@ -110,8 +74,7 @@ const QuestionRenderer = ({ question, savedAnswers = {}, onSaveAnswer }) => { //
           id={question.id}
           label={question.label}
           options={question.options}
-          currentAnswer={currentAnswer}
-          onAnswerChange={handleAnswerChange}
+          formMethods={formMethods}
         />
       );
     case 'ranking':
@@ -120,8 +83,7 @@ const QuestionRenderer = ({ question, savedAnswers = {}, onSaveAnswer }) => { //
           id={question.id}
           label={question.label}
           options={question.options}
-          currentAnswer={currentAnswer}
-          onAnswerChange={handleAnswerChange}
+          formMethods={formMethods}
         />
       );
     default:
