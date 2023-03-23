@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const path = require('path');
 
@@ -28,7 +29,7 @@ app.listen(port, () => {
   console.log(`Server listening at http://localhost:${port}`);
 });
 
-const connectionString = 'mongodb+srv://doadmin:78q5EaAro4k12t09@db-mongodb-nyc1-22353-db14ccba.mongo.ondigitalocean.com/admin?replicaSet=db-mongodb-nyc1-22353&tls=true&authSource=admin';
+const connectionString = process.env.MONGODB_CONNECTION_STRING;
 
 mongoose.connect(connectionString, {
   useNewUrlParser: true,
